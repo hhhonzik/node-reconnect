@@ -1,6 +1,6 @@
 'use strict';
 import assert from 'assert';
-import Reconnect from '../lib';
+import Reconnect from '../src';
 import dummyService from './dummyservice';
 
 
