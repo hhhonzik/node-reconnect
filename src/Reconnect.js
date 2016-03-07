@@ -3,7 +3,7 @@ export default class Reconnect{
     this.repeatDelay = options.repeatDelay;
     this.status = 'disconnected';
     this.reconnectCount = 0;
-
+    this.timeoutId = false;
   }
   handleConnect(connect){
     this.serviceConnect = connect;
@@ -27,6 +27,10 @@ export default class Reconnect{
     }
   }
   handleError(err) {
+    if (this.timeoutId) {
+      console.error(`Service errored (${this.reconnectCount} times), already waiting for reconnect.`);
+      return;
+    }
     console.error(`Service errored (${this.reconnectCount} times), waiting ${this.repeatDelay}ms to reconnect.`);
 
     this.status = 'errored';
@@ -34,13 +38,14 @@ export default class Reconnect{
       this.onError(err);
     }
 
-    setTimeout(() => {
+    this.timeoutId = setTimeout(() => {
       if (this.status !== 'errored') {
         console.warn(`Service has recovered.`);
         return;
       }
       this.reconnectCount += 1;
       this.tryConnect();
+      this.timeoutId = false;
     }, this.repeatDelay);
   }
 }

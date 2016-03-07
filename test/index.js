@@ -49,4 +49,18 @@ describe('Reconnect', () => {
       done();
     }, 400);
   });
+  it('should reconnect service just once', (done) => {
+    instance.service.crash();
+    instance.service.crash();
+    instance.service.crash();
+    assert.equal(instance.status, 'errored');
+    setTimeout(() => {
+      assert.equal(instance.status, 'connecting');
+    }, 100);
+    setTimeout(() => {
+      assert.equal(instance.status, 'connected');
+      assert.equal(instance.reconnectCount, 1);
+      done();
+    }, 400);
+  });
 });
