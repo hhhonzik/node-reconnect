@@ -39,5 +39,4 @@ npm run test
 ## Todo
 
 - Add better documentation
-- Add reconnect count
 
